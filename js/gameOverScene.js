@@ -3,10 +3,14 @@ import Phaser from 'phaser';
 export default class gameOverScene extends Phaser.Scene {
 	constructor() {
 		super('gameOverScene');
+		this.bestScore = 0;
 	}
 
 	init(data) {
 		this.score = data.score;
+		if (this.score > this.bestScore) {
+			this.bestScore = this.score;
+		}
 	}
 
 	preload() {
@@ -16,6 +20,17 @@ export default class gameOverScene extends Phaser.Scene {
 
 	create() {
 		this.add.image(400, 300, 'sky');
+
+		this.bestScoreText = this.add
+			.text(
+				this.screenMiddleX,
+				this.screenMiddleY - 150,
+				'Best score: ' + this.bestScore,
+				{
+					fontSize: '36px',
+				}
+			)
+			.setOrigin(0.5);
 		this.gameOverText = this.add
 			.text(
 				this.screenMiddleX,
@@ -28,7 +43,7 @@ export default class gameOverScene extends Phaser.Scene {
 			.setOrigin(0.5);
 
 		this.restartButton = this.add
-			.text(this.screenMiddleX, this.screenMiddleY + 50, 'RESTART', {
+			.text(this.screenMiddleX, this.screenMiddleY + 100, 'RESTART', {
 				fontSize: '40px',
 			})
 			.setOrigin(0.5);

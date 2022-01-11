@@ -3,13 +3,6 @@ import Phaser from 'phaser';
 export default class gameScene extends Phaser.Scene {
 	constructor() {
 		super('gameScene');
-		this.platforms;
-		this.player;
-		this.cursors;
-		this.stars;
-		this.score = 0;
-		this.scoreText;
-		this.bombs;
 	}
 
 	preload() {
@@ -25,6 +18,7 @@ export default class gameScene extends Phaser.Scene {
 	}
 
 	create() {
+		this.score = 0;
 		this.createWorld();
 		this.createPlayer();
 		this.createStars();
@@ -33,6 +27,12 @@ export default class gameScene extends Phaser.Scene {
 		this.cursors = this.input.keyboard.createCursorKeys();
 
 		this.createAnims();
+
+		this.menuButtonCover = this.add
+			.rectangle(790, 10, 30, 10, 0xfef2fe, 1)
+			.setOrigin(1, 0)
+			.setInteractive()
+			.on('pointerup', () => this.scene.start('mainMenu'));
 	}
 
 	createWorld() {
