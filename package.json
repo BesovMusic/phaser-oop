@@ -1,0 +1,19 @@
+{
+	"name": "phaser-oop",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"watch": "webpack ./js/main.js --mode development -w"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"phaser": "^3.55.2"
+	},
+	"devDependencies": {
+		"webpack": "^5.65.0",
+		"webpack-cli": "^4.9.1"
+	}
+}
