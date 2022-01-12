@@ -4,10 +4,14 @@ export default class gameScene extends Phaser.Scene {
 	constructor() {
 		super('gameScene');
 		this.sight = 'right';
+		this.right;
+		this.left;
+		this.jump;
 	}
 
 	preload() {
 		this.load.image('restart', 'assets/Restart.png');
+		this.load.image('fullscreen', 'assets/Fullscreen.png');
 		this.load.image('ground', 'assets/platform.png');
 		this.load.image('bomb', 'assets/bomb.png');
 		this.load.spritesheet('dude', 'assets/character/Idle.png', {
@@ -33,16 +37,23 @@ export default class gameScene extends Phaser.Scene {
 
 		this.load.audio('bg-audio', 'assets/heart-of-the-sea-01.mp3');
 		this.load.audio('collect', 'assets/collect.mp3');
+
+		this.preloadControls();
+	}
+
+	preloadControls() {
+		this.load.image('bLeft', 'assets/controls/bLeft.png');
+		this.load.image('bRight', 'assets/controls/bRight.png');
+		this.load.image('bJump', 'assets/controls/bJump.png');
 	}
 
 	create() {
 		this.score = 0;
 		this.createWorld();
 		this.createPlayer();
+		this.createControls();
 		this.createStars();
 		this.createColliders();
-
-		this.cursors = this.input.keyboard.createCursorKeys();
 
 		this.createAnims();
 
@@ -53,8 +64,10 @@ export default class gameScene extends Phaser.Scene {
 			.setInteractive()
 			.on('pointerup', () => this.scene.start('mainMenu'));
 
-		this.fullScreenBtn = this.add
-			.rectangle(730, 20, 30, 30, 0xffffff, 1)
+		this.add
+			.image(740, 20, 'fullscreen')
+			.setOrigin(0.5)
+			.setScale(1.5)
 			.setInteractive()
 			.on('pointerup', () => this.toggleFullscreen());
 	}
@@ -85,6 +98,47 @@ export default class gameScene extends Phaser.Scene {
 		});
 
 		this.bombs = this.physics.add.group();
+	}
+
+	createControls() {
+		this.cursors = this.input.keyboard.createCursorKeys();
+
+		this.bLeft = this.add
+			.image(50, 500, 'bLeft')
+			.setScale(0.2)
+			.setOrigin(0)
+			.setInteractive();
+		this.bRight = this.add
+			.image(150, 500, 'bRight')
+			.setScale(0.2)
+			.setOrigin(0)
+			.setInteractive();
+		this.bJump = this.add
+			.image(650, 500, 'bJump')
+			.setScale(0.2)
+			.setOrigin(0)
+			.setInteractive();
+
+		this.bJump.on('pointerdown', () => {
+			this.jump = true;
+		});
+		this.bJump.on('pointerup', () => {
+			this.jump = false;
+		});
+
+		this.bLeft.on('pointerdown', () => {
+			this.left = true;
+		});
+		this.bLeft.on('pointerup', () => {
+			this.left = false;
+		});
+
+		this.bRight.on('pointerdown', () => {
+			this.right = true;
+		});
+		this.bRight.on('pointerup', () => {
+			this.right = false;
+		});
 	}
 
 	createPlayer() {
@@ -204,12 +258,28 @@ export default class gameScene extends Phaser.Scene {
 	}
 
 	update() {
+		if (this.cursors.up.isDown) {
+			this.jump = true;
+		} else {
+			this.jump = false;
+		}
 		if (this.cursors.left.isDown) {
+			this.left = true;
+		} else {
+			this.left = false;
+		}
+		if (this.cursors.right.isDown) {
+			this.right = true;
+		} else {
+			this.right = false;
+		}
+
+		if (this.left) {
 			this.sight = 'left';
 			this.player.setVelocityX(-160);
 
 			this.player.anims.play('left', true);
-		} else if (this.cursors.right.isDown) {
+		} else if (this.right) {
 			this.sight = 'right';
 			this.player.setVelocityX(160);
 
@@ -220,15 +290,12 @@ export default class gameScene extends Phaser.Scene {
 			// console.log(this.sight);
 		}
 
-		if (this.cursors.up.isDown && this.player.body.touching.down) {
+		if (this.jump && this.player.body.touching.down) {
 			this.player.setVelocityY(-480);
 		}
-		if (this.cursors.right.isDown && !this.player.body.touching.down) {
+		if (this.right && !this.player.body.touching.down) {
 			this.player.anims.play('jumpR');
-		} else if (
-			this.cursors.left.isDown &&
-			!this.player.body.touching.down
-		) {
+		} else if (this.left && !this.player.body.touching.down) {
 			this.player.anims.play('jumpL');
 		}
 	}
