@@ -28,6 +28,7 @@ export default class gameOverScene extends Phaser.Scene {
 				'Best score: ' + this.bestScore,
 				{
 					fontSize: '36px',
+					fontFamily: 'Roboto',
 				}
 			)
 			.setOrigin(0.5);
@@ -38,6 +39,7 @@ export default class gameOverScene extends Phaser.Scene {
 				'Game over! Your score: ' + this.score,
 				{
 					fontSize: '36px',
+					fontFamily: 'Roboto',
 				}
 			)
 			.setOrigin(0.5);
@@ -45,6 +47,7 @@ export default class gameOverScene extends Phaser.Scene {
 		this.restartButton = this.add
 			.text(this.screenMiddleX, this.screenMiddleY + 100, 'RESTART', {
 				fontSize: '40px',
+				fontFamily: 'Roboto',
 			})
 			.setOrigin(0.5);
 

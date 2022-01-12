@@ -3,14 +3,32 @@ import Phaser from 'phaser';
 export default class gameScene extends Phaser.Scene {
 	constructor() {
 		super('gameScene');
+		this.sight = 'right';
 	}
 
 	preload() {
+		this.load.image('restart', 'assets/Restart.png');
 		this.load.image('ground', 'assets/platform.png');
 		this.load.image('bomb', 'assets/bomb.png');
-		this.load.spritesheet('dude', 'assets/dude.png', {
+		this.load.spritesheet('dude', 'assets/character/idle.png', {
 			frameWidth: 32,
-			frameHeight: 48,
+			frameHeight: 32,
+		});
+		this.load.spritesheet('runR', 'assets/character/RunR.png', {
+			frameWidth: 32,
+			frameHeight: 32,
+		});
+		this.load.spritesheet('runL', 'assets/character/RunL.png', {
+			frameWidth: 32,
+			frameHeight: 32,
+		});
+		this.load.spritesheet('jumpR', 'assets/character/JumpR.png', {
+			frameWidth: 32,
+			frameHeight: 32,
+		});
+		this.load.spritesheet('jumpL', 'assets/character/JumpL.png', {
+			frameWidth: 32,
+			frameHeight: 32,
 		});
 
 		this.load.audio('bg-audio', 'assets/heart-of-the-sea-01.mp3');
@@ -29,10 +47,24 @@ export default class gameScene extends Phaser.Scene {
 		this.createAnims();
 
 		this.menuButtonCover = this.add
-			.rectangle(790, 10, 30, 10, 0xfef2fe, 1)
-			.setOrigin(1, 0)
+			.image(780, 20, 'restart')
+			.setOrigin(0.5)
+			.setScale(1.5)
 			.setInteractive()
 			.on('pointerup', () => this.scene.start('mainMenu'));
+
+		this.fullScreenBtn = this.add
+			.rectangle(730, 20, 30, 30, 0xffffff, 1)
+			.setInteractive()
+			.on('pointerup', () => this.toggleFullscreen());
+	}
+
+	toggleFullscreen() {
+		if (this.scale.isFullscreen) {
+			this.scale.stopFullscreen();
+		} else {
+			this.scale.startFullscreen();
+		}
 	}
 
 	createWorld() {
@@ -46,9 +78,10 @@ export default class gameScene extends Phaser.Scene {
 		this.platforms.create(50, 250, 'ground');
 		this.platforms.create(750, 220, 'ground');
 
-		this.scoreText = this.add.text(16, 16, 'Score: 0', {
+		this.scoreText = this.add.text(10, 10, 'Score: 0', {
 			fontSize: '32px',
 			fill: 'black',
+			fontFamily: 'Roboto',
 		});
 
 		this.bombs = this.physics.add.group();
@@ -129,48 +162,74 @@ export default class gameScene extends Phaser.Scene {
 	createAnims() {
 		this.anims.create({
 			key: 'left',
-			frames: this.anims.generateFrameNumbers('dude', {
+			frames: this.anims.generateFrameNumbers('runL', {
 				start: 0,
-				end: 3,
+				end: 11,
 			}),
-			frameRate: 10,
+			forward: false,
+			frameRate: 30,
+			repeat: -1,
+		});
+
+		this.anims.create({
+			key: 'right',
+			frames: this.anims.generateFrameNumbers('runR', {
+				start: 0,
+				end: 11,
+			}),
+			frameRate: 30,
 			repeat: -1,
 		});
 
 		this.anims.create({
 			key: 'turn',
-			frames: [{ key: 'dude', frame: 4 }],
-			frameRate: 20,
-		});
-
-		this.anims.create({
-			key: 'right',
 			frames: this.anims.generateFrameNumbers('dude', {
-				start: 5,
-				end: 8,
+				start: 0,
+				end: 10,
 			}),
 			frameRate: 10,
 			repeat: -1,
+		});
+
+		this.anims.create({
+			key: 'jumpR',
+			frames: [{ key: 'jumpR', frame: 0 }],
+			frameRate: 20,
+		});
+		this.anims.create({
+			key: 'jumpL',
+			frames: [{ key: 'jumpL', frame: 0 }],
+			frameRate: 20,
 		});
 	}
 
 	update() {
 		if (this.cursors.left.isDown) {
+			this.sight = 'left';
 			this.player.setVelocityX(-160);
 
 			this.player.anims.play('left', true);
 		} else if (this.cursors.right.isDown) {
+			this.sight = 'right';
 			this.player.setVelocityX(160);
 
 			this.player.anims.play('right', true);
 		} else {
+			this.player.anims.play('turn', true);
 			this.player.setVelocityX(0);
-
-			this.player.anims.play('turn');
+			// console.log(this.sight);
 		}
 
 		if (this.cursors.up.isDown && this.player.body.touching.down) {
 			this.player.setVelocityY(-480);
+		}
+		if (this.cursors.right.isDown && !this.player.body.touching.down) {
+			this.player.anims.play('jumpR');
+		} else if (
+			this.cursors.left.isDown &&
+			!this.player.body.touching.down
+		) {
+			this.player.anims.play('jumpL');
 		}
 	}
 }

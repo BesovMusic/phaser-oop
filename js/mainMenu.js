@@ -17,7 +17,7 @@ export default class mainMenu extends Phaser.Scene {
 		this.add
 			.text(400, 300, 'Start Game!', {
 				fontSize: '45px',
-				fontFamily: 'serif',
+				fontFamily: 'Roboto',
 			})
 			.setOrigin(0.5);
 		btn.setInteractive();
