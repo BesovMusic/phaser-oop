@@ -258,21 +258,21 @@ export default class gameScene extends Phaser.Scene {
 	}
 
 	update() {
-		if (this.cursors.up.isDown) {
-			this.jump = true;
-		} else {
-			this.jump = false;
-		}
-		if (this.cursors.left.isDown) {
-			this.left = true;
-		} else {
-			this.left = false;
-		}
-		if (this.cursors.right.isDown) {
-			this.right = true;
-		} else {
-			this.right = false;
-		}
+		// if (this.cursors.up.isDown) {
+		// 	this.jump = true;
+		// } else {
+		// 	this.jump = false;
+		// }
+		// if (this.cursors.left.isDown) {
+		// 	this.left = true;
+		// } else {
+		// 	this.left = false;
+		// }
+		// if (this.cursors.right.isDown) {
+		// 	this.right = true;
+		// } else {
+		// 	this.right = false;
+		// }
 
 		if (this.left) {
 			this.sight = 'left';
