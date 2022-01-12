@@ -10,7 +10,7 @@ export default class gameScene extends Phaser.Scene {
 		this.load.image('restart', 'assets/Restart.png');
 		this.load.image('ground', 'assets/platform.png');
 		this.load.image('bomb', 'assets/bomb.png');
-		this.load.spritesheet('dude', 'assets/character/idle.png', {
+		this.load.spritesheet('dude', 'assets/character/Idle.png', {
 			frameWidth: 32,
 			frameHeight: 32,
 		});
